@@ -1,0 +1,12 @@
+{
+  "name": "inf2-skill-claude",
+  "description": "Claude Code plugin for AWS Inferentia2 DevOps.",
+  "owner": {"name": "xbill9", "url": "https://github.com/xbill9"},
+  "plugins": [
+    {
+      "name": "inf2-management",
+      "source": "./",
+      "description": "Provision and operate Inf2 instances and Neuron vLLM serving."
+    }
+  ]
+}
