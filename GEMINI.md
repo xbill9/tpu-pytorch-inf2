@@ -38,6 +38,24 @@ resources, runs Gemma 4 vLLM serving (v6e/v5p/v5e), and creates PyTorch
 (TorchTPU) dev VMs with `workload="pytorch"` that smoke-test
 `torch.compile(backend="tpu")`.
 
+### TorchTPU Coding & Compilation Guardrails
+
+- **No Legacy Imports**: Do **NOT** use PyTorch/XLA (`import torch_xla`) or `import torch_tpu`. Use pure PyTorch APIs targeting `torch.device("tpu")` or `torch.accelerator.current_accelerator()`.
+- **Backend Compilation**: Always compile PyTorch models using `torch.compile(model, backend="tpu")` to maximize FLOPS utilization.
+- **Graph Break Prevention**: Avoid mixing Python control flow (`if`/`else` on tensor values), scalar conversions (`.item()`), or `print()` statements inside compiled forward passes.
+- **MXU Tile Alignment**: Align tensor batch sizes and sequence dimensions to multiples of **128** (or 8/16) using `pad_to_multiple_of=128` to fit the TPU Matrix Multiply Unit (MXU) systolic array tiles.
+- **BFloat16 Precision**: Prefer native `torch.bfloat16` precision over `float32` (which is emulated).
+- **Installation Pipeline**: On TPU VMs (Python 3.12/3.11), install `torch_tpu` from the GCP Artifact Registry:
+  ```bash
+  pip install --pre --index-url \
+    "https://oauth2accesstoken:$(gcloud auth print-access-token)@us-python.pkg.dev/ml-oss-artifacts-transient/torch-tpu-virtual-registry/simple/" \
+    torch_tpu
+  ```
+- **Marimo Documentation**: Inspect or run interactive documentation notebooks via:
+  ```bash
+  marimo edit /torch_tpu/docs/notebooks/
+  ```
+
 ### Gemini CLI via LiteLLM proxy against a self-hosted TPU endpoint
 
 Route Gemini CLI traffic to the Gemma 4 model served from a TPU VM:

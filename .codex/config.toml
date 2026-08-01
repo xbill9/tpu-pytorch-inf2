@@ -1,0 +1,12 @@
+[mcp_servers.inf2-devops]
+command = "python3"
+args = ["server.py"]
+cwd = "/home/xbill/tpu-pytorch-inf2"
+
+[mcp_servers.inf2-devops.env]
+AWS_REGION = "us-east-1"
+MODEL_NAME = "google/gemma-4-E2B-it"
+INSTANCE_TYPE = "inf2.xlarge"
+
+[mcp_servers.inf2-devops.tools.create_inf2_instance]
+approval_mode = "approve"
